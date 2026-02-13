@@ -3,7 +3,7 @@ HTTP Service Wrapper for RL Decision Brain
 Stateless Flask service ready for Render deployment
 """
 
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify
 from rl_decision_brain import RLDecisionBrain
 import logging
 import os
@@ -76,14 +76,23 @@ def scope():
     }), 200
 
 @app.route('/', methods=['GET'])
-@app.route('/dashboard', methods=['GET'])
-def dashboard():
-    """Serve dashboard HTML"""
-    dashboard_path = os.path.join(os.path.dirname(__file__), 'dashboard.html')
-    return send_file(dashboard_path)
+def home():
+    """API home endpoint"""
+    return jsonify({
+        "service": "RL Decision Brain",
+        "version": "1.0",
+        "status": "healthy",
+        "demo_frozen": True,
+        "endpoints": {
+            "health": "GET /health",
+            "decide": "POST /decide",
+            "scope": "GET /scope"
+        },
+        "documentation": "https://github.com/rityadani/rl-autonomous-decision-brain.py"
+    }), 200
 
 if __name__ == '__main__':
-    port = 8080
+    port = int(os.environ.get('PORT', 8080))
     logger.info(f"Starting RL Decision Brain on port {port}")
     logger.info("Demo-frozen mode: Learning DISABLED, Exploration DISABLED")
     app.run(host='0.0.0.0', port=port, debug=False)
