@@ -58,21 +58,13 @@ curl -X POST http://localhost:8080/decide \
 
 ## Deployment (Render)
 
-### Option 1: Web Service
+### Web Service Deployment
 1. Connect GitHub repo to Render
 2. Set build command: `pip install -r requirements.txt`
-3. Set start command: `gunicorn app:app --bind 0.0.0.0:8080`
+3. Set start command: `gunicorn app:app --bind 0.0.0.0:$PORT`
 4. Deploy
 
-### Option 2: Docker (if needed)
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080"]
-```
+**Note:** Use `$PORT` environment variable (Render provides this automatically)
 
 ---
 
